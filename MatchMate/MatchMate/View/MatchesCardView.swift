@@ -9,10 +9,10 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct MatchesCardView: View {
-    @State var isButtonPressed: Bool = false
+    @Binding var data: ProfileMatchesModel
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
-            WebImage(url: URL(string: "https://randomuser.me/api/portraits/med/men/83.jpg")) { image in
+            WebImage(url: URL(string: data.imageUrl)) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -25,20 +25,22 @@ struct MatchesCardView: View {
                 .frame(width: screenWidth/3, height: screenWidth/3, alignment: .center)
                 .padding(.top, 20)
             
-            Text("Charles Baggage")
+            Text(data.name)
                 .foregroundStyle(.blue)
                 .fontWeight(.bold)
                 .font(.title)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20)
             
-            Text("56, washington, london NY near SLU, SOUTH pacific")
+            Text(data.address)
                 .foregroundStyle(.gray)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 10)
                 .lineLimit(2)
             
-            if isButtonPressed {
+            
+            switch data.status {
+            case .accepted:
                 Text("Accepted")
                     .foregroundStyle(.white)
                     .font(.title2)
@@ -48,8 +50,7 @@ struct MatchesCardView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.blue)
                     )
-                
-            } else {
+            case .pending:
                 HStack(spacing: 50) {
                     declineButton
 
@@ -57,10 +58,19 @@ struct MatchesCardView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, 10)
+            case .rejected:
+                Text("Rejected")
+                    .foregroundStyle(.white)
+                    .font(.title2)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.blue)
+                    )
             }
     
         }
-        .animation(.linear, value: isButtonPressed)
         .background {
             RoundedRectangle(cornerRadius: 20)
                 .fill(.white)
@@ -75,7 +85,7 @@ struct MatchesCardView: View {
     
     var acceptButton: some View {
         Button {
-            isButtonPressed = true
+            data.status = .accepted
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
@@ -91,7 +101,7 @@ struct MatchesCardView: View {
     
     var declineButton: some View {
         Button {
-            isButtonPressed = true
+            data.status = .rejected
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
@@ -107,5 +117,13 @@ struct MatchesCardView: View {
 }
 
 #Preview {
-    MatchesCardView()
+    MatchesCardView(
+        data: .constant(ProfileMatchesModel(
+            id: "",
+            imageUrl: "",
+            name: "",
+            address: "",
+            status: .pending
+        )) 
+    )
 }

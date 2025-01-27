@@ -19,12 +19,15 @@ enum Endpoint {
     case fetchProfileMatches
     var method: String {
         switch self {
-        default:
+        case .fetchProfileMatches:
             return "GET"
         }
     }
     var baseUrl: String {
-        return "https://randomuser.me/api/?results=10"
+        switch self {
+        case .fetchProfileMatches:
+            return "https://randomuser.me/api/?results=10"
+        }
     }
     var url: URL? {
         guard let url = URL(string: baseUrl) else { return nil }
@@ -32,7 +35,7 @@ enum Endpoint {
     }
 }
 
-class NetworkManager {
+final class NetworkManager {
     private init() {}
     static let shared = NetworkManager()
     
