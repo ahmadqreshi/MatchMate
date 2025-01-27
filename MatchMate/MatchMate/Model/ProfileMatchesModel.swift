@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MatchStatus: Codable {
+enum MatchStatus: String, Codable {
     case accepted
     case pending
     case rejected
@@ -18,7 +18,7 @@ struct ProfileMatchesModel: Codable {
     let imageUrl: String
     let name: String
     let address: String
-    var status: MatchStatus = .pending
+    var status: String
     
     // To Handle only Single source of data
     static func build(response: ServerResponse) -> [Self] {
@@ -28,7 +28,7 @@ struct ProfileMatchesModel: Codable {
             let imageUrl = user.picture?.large ?? ""
             let name = "\(user.name?.first ?? "") \(user.name?.last ?? "")"
             let address = "\(user.location?.street?.number ?? 000) \(user.location?.street?.name ?? ""), \(user.location?.city ?? ""), \(user.location?.state ?? "")"
-            let matchStatus: MatchStatus = .pending
+            let matchStatus: String = MatchStatus.pending.rawValue
             let profileMatchModel = ProfileMatchesModel(id: id, imageUrl: imageUrl, name: name, address: address, status: matchStatus)
             matches.append(profileMatchModel)
         }

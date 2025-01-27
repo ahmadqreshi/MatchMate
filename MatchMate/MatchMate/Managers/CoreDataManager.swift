@@ -45,6 +45,23 @@ final class CoreDataManager {
         }
         return [T]()
     }
+        
+    func checkExistence<T: NSManagedObject>(objectType: T.Type, id: String, predicate: String) -> (Bool, [T]) {
+        let entityName = String(describing: objectType)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        fetchRequest.predicate = NSPredicate(format: "\(predicate)== %@", id)
+        do {
+            let entities = try context.fetch(fetchRequest)
+            if entities.isEmpty {
+                return (false, [T]())
+            } else {
+                return (true, entities as! [T])
+            }
+        } catch {
+            debugPrint("Failed to fetch users: \(error)")
+        }
+        return (false,[T]())
+    }
     
     func saveContext () {
         if context.hasChanges {

@@ -10,6 +10,11 @@ import SDWebImageSwiftUI
 
 struct MatchesCardView: View {
     @Binding var data: ProfileMatchesModel
+    
+    var status: MatchStatus {
+        return MatchStatus(rawValue: data.status) ?? .pending
+    }
+    
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             WebImage(url: URL(string: data.imageUrl)) { image in
@@ -39,7 +44,7 @@ struct MatchesCardView: View {
                 .lineLimit(2)
             
             
-            switch data.status {
+            switch status {
             case .accepted:
                 Text("Accepted")
                     .foregroundStyle(.white)
@@ -85,7 +90,7 @@ struct MatchesCardView: View {
     
     var acceptButton: some View {
         Button {
-            data.status = .accepted
+            data.status = MatchStatus.accepted.rawValue
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
@@ -101,7 +106,7 @@ struct MatchesCardView: View {
     
     var declineButton: some View {
         Button {
-            data.status = .rejected
+            data.status = MatchStatus.rejected.rawValue
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
@@ -123,7 +128,7 @@ struct MatchesCardView: View {
             imageUrl: "",
             name: "",
             address: "",
-            status: .pending
-        )) 
+            status: MatchStatus.accepted.rawValue
+        ))
     )
 }
