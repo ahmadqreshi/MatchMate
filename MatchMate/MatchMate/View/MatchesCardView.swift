@@ -91,6 +91,12 @@ struct MatchesCardView: View {
     var acceptButton: some View {
         Button {
             data.status = MatchStatus.accepted.rawValue
+            let object = CoreDataManager.shared.checkExistence(objectType: UserMatches.self, id: data.id, predicate: "id").1
+            for data in object {
+                data.status = MatchStatus.accepted.rawValue
+                CoreDataManager.shared.saveContext()
+            }
+            
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
@@ -107,6 +113,11 @@ struct MatchesCardView: View {
     var declineButton: some View {
         Button {
             data.status = MatchStatus.rejected.rawValue
+            let object = CoreDataManager.shared.checkExistence(objectType: UserMatches.self, id: data.id, predicate: "id").1
+            for data in object {
+                data.status = MatchStatus.rejected.rawValue
+                CoreDataManager.shared.saveContext()
+            }
         } label: {
             Circle()
                 .stroke(.blue, lineWidth: 2)
